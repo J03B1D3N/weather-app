@@ -1,34 +1,39 @@
-
-const img = document.querySelector('img')
 const btn = document.querySelector('button')
 const input = document.getElementById('search')
 const p = document.querySelector('p')
+const currentTemp = document.getElementById('currentTemp')
+const feelsLikeTemp = document.getElementById('feelsLikeTemp')
+const pressure = document.getElementById('pressure')
+const maxTemp = document.getElementById('maxTemp')
+const minTemp = document.getElementById('minTemp')
+const wind = document.getElementById('wind')
 
-async function getCats() {
+
+const api_key = '21ad911d5f1719a1d5ce294eec8a1017'
+const coordinates_api = 'http://api.openweathermap.org/geo/1.0/direct?q=London&limit=5&appid={API key}'
+
+async function getWeather() {
    try {
-   const response = await fetch('https://api.giphy.com/v1/gifs/translate?api_key=ZXCcQUsoszr878jevQAD71bEYHkMSvwh&s=cats', {mode: 'cors'})
+   const coordinates = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${input.value}&limit=1&appid=${api_key}`)
+   const city = await coordinates.json();
+   console.log(city)
+   const weatherJson = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${city[0].lat}&lon=${city[0].lon}&units=metric&appid=${api_key}`)
+   const weather = await weatherJson.json();
+   
+   p.textContent = weather.name
+   console.log(weather)
+   currentTemp.textContent = 'temp ' + weather.main.temp
+   feelsLikeTemp.textContent = 'jutimine ' +weather.main.feels_like
+   pressure.textContent = weather.main.pressure + 'psi'
+   maxTemp.textContent = weather.main.temp_max
+   minTemp.textContent = weather.main.temp_min
+   
 
-    const catData = await response.json()
-      img.src = catData.data.images.original.url;
-   } catch (error) {
-      p.textContent = error
+
+
+   } catch (err) {
+      console.log(err)
    }
 }
-getCats()
 
-
- 
-  btn.addEventListener('click', () => {
-   p.textContent = '';
-    img.src = ''
-    fetch(`https://api.giphy.com/v1/gifs/translate?api_key=ZXCcQUsoszr878jevQAD71bEYHkMSvwh&s=${input.value}`, {mode: 'cors'})
- .then(function(response) {
-    return response.json()
- }).then(function(response) {
-    img.src = response.data.images.original.url;
-    console.log('done')
-  }).catch(function(error) {
-    p.textContent = error
-    
-  });
-  })
+btn.addEventListener('click', getWeather)
