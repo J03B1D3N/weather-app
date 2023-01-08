@@ -6,7 +6,8 @@ const feelsLikeTemp = document.getElementById('feelsLikeTemp')
 const pressure = document.getElementById('pressure')
 const maxTemp = document.getElementById('maxTemp')
 const minTemp = document.getElementById('minTemp')
-const wind = document.getElementById('wind')
+const weatherP = document.getElementById('weather')
+const body = document.querySelector('body')
 
 
 const api_key = '21ad911d5f1719a1d5ce294eec8a1017'
@@ -20,13 +21,14 @@ async function getWeather() {
    const weatherJson = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${city[0].lat}&lon=${city[0].lon}&units=metric&appid=${api_key}`)
    const weather = await weatherJson.json();
    
-   p.textContent = weather.name
+   p.textContent = city[0].name
    console.log(weather)
-   currentTemp.textContent = 'temp ' + weather.main.temp
-   feelsLikeTemp.textContent = 'jutimine ' +weather.main.feels_like
-   pressure.textContent = weather.main.pressure + 'psi'
-   maxTemp.textContent = weather.main.temp_max
-   minTemp.textContent = weather.main.temp_min
+   currentTemp.textContent = 'Current temperature ' + weather.main.temp.toFixed(1) + '°C'
+   feelsLikeTemp.textContent = 'Feels like ' +weather.main.feels_like.toFixed(1) + '°C'
+   pressure.textContent = 'Atmospheric pressure ' + weather.main.pressure.toFixed(1)+ ' hPa'
+   maxTemp.textContent = 'Max temperature ' + weather.main.temp_max.toFixed(1) + '°C'
+   minTemp.textContent = 'Min temperature ' + weather.main.temp_min.toFixed(1) + '°C'
+   weatherP.textContent = weather.weather[0].main
    
 
 
