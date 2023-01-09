@@ -24,10 +24,16 @@ import "./style.scss";
       this.api_key = '21ad911d5f1719a1d5ce294eec8a1017'
       },
       getCountry: async function(c) {
+         try {
          const Countries = await fetch(`https://restcountries.com/v3.1/alpha/${c}`, {mode: 'cors'})
          this.countriesJson = await Countries.json();
          this.country = this.countriesJson[0].name.common
+         this.cityP.textContent = `${this.cityCoordinates[0].name}, ${this.country}`
+
          console.log(this.country)
+         } catch(err) {
+            console.log(err)
+         }
       } ,
       bindEvents: function() {
          form.addEventListener('submit', (e) => {
@@ -44,14 +50,16 @@ import "./style.scss";
             this.weather = await cityWeather.json();
             
             console.log(this.weather)
+            this.getCountry(this.cityCoordinates[0].country)
             this.updateDom();
+            this.input.value = ''
             } catch (err) {
                console.log(err)
             }
          },
-         updateDom: function() {
-            this.getCountry(this.cityCoordinates[0].country)
-            this.cityP.textContent = this.cityCoordinates[0].name + ', ' + this.countriesJson[0].name.common
+         updateDom: async function() {
+           
+            
             console.log()
             this.currentTemp.textContent = 'Current temperature ' + this.weather.main.temp.toFixed(1) + '°C'
             this.feelsLikeTemp.textContent = 'Feels like ' +this.weather.main.feels_like.toFixed(1) + '°C'
