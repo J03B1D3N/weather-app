@@ -41,6 +41,27 @@ header {
         justify-content: flex-start;
         align-items: center;
         gap: 15px;
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            .chosen {
+                border: 3px solid white;
+            }
+            .btn{
+                height: 2.5rem;
+                font-size: 2rem;
+                width: 3rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .btn:hover {
+                background-color: rgba(white, 0.3);
+                cursor: pointer;
+            }
+        }
         #search {
             height: 2.5rem;
             border: none;

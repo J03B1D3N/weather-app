@@ -4,6 +4,8 @@ import 'animate.css';
 
 
 (function () {
+   let celcius = true;
+
    let weather_app = {
       init: function() {
          this.cachingDom();
@@ -23,7 +25,6 @@ import 'animate.css';
        },
        
       cachingDom: function() {
-
       this.btn = document.querySelector('button')
       this.input = document.getElementById('search')
       this.cityP = document.getElementById('city')
@@ -36,6 +37,8 @@ import 'animate.css';
       this.form = document.getElementById('form')
       this.api_key = '21ad911d5f1719a1d5ce294eec8a1017'
       this.wrappers = document.querySelectorAll('.wrapper')
+      this.celcius = document.getElementById('celcius')
+      this.farenheit = document.getElementById('farenheit')
       },
       getCountry: async function(c) {
          try {
@@ -48,13 +51,27 @@ import 'animate.css';
          }
       } ,
       bindEvents: function() {
-         form.addEventListener('submit', (e) => {
+         this.form.addEventListener('submit', (e) => {
             e.preventDefault();
             this.getWeather();
          })
+         this.celcius.addEventListener('click', () => {
+            this.farenheit.classList.remove('chosen')
+            this.celcius.classList.add('chosen')
+            celcius = true;
+            console.log(celcius)
+         })
+         this.farenheit.addEventListener('click', () => {
+            this.celcius.classList.remove('chosen')
+            this.farenheit.classList.add('chosen')
+            celcius = false;
+            console.log(celcius)
+         })
+
       },
       getWeather: async function() {
          try {
+            if(celcius){
             const GetCoordinates = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${this.input.value}&limit=1&appid=${this.api_key}`)
             this.cityCoordinates = await GetCoordinates.json();
             const cityWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${this.cityCoordinates[0].lat}&lon=${this.cityCoordinates[0].lon}&units=metric&appid=${this.api_key}`)
@@ -64,7 +81,16 @@ import 'animate.css';
             console.log(this.cityFutureWeather.list)
 
             this.getCountry(this.cityCoordinates[0].country)
-            
+            } else {
+               const GetCoordinates = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${this.input.value}&limit=1&appid=${this.api_key}`)
+               this.cityCoordinates = await GetCoordinates.json();
+               const cityWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${this.cityCoordinates[0].lat}&lon=${this.cityCoordinates[0].lon}&units=imperial&appid=${this.api_key}`)
+               this.weather = await cityWeather.json();
+               const getCityFutureWeather = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${this.cityCoordinates[0].lat}&lon=${this.cityCoordinates[0].lon}&units=imperial&appid=${this.api_key}`)
+               this.cityFutureWeather = await getCityFutureWeather.json();
+               this.getCountry(this.cityCoordinates[0].country)
+               console.log(this.cityFutureWeather.list)
+            }
             this.input.value = ''
             } catch (err) {
                console.log(err)
@@ -97,19 +123,32 @@ import 'animate.css';
 
                main.appendChild(currentWrapper)
             }
-
-            const data1 = this.weather.main.temp.toFixed(1) + '°C'
-            const data2 = this.weather.main.feels_like.toFixed(1) + '°C'
-            const data3 = this.weather.main.pressure.toFixed(1)+ ' hPa'
-            const data4 = this.weather.main.humidity.toFixed(1) + '%'
-            const data5 = this.weather.weather[0].main
+            if(celcius){
+               const data1 = this.weather.main.temp.toFixed(1) + '°C'
+               const data2 = this.weather.main.feels_like.toFixed(1) + '°C'
+               const data3 = this.weather.main.pressure.toFixed(1)+ ' hPa'
+               const data4 = this.weather.main.humidity.toFixed(1) + '%'
+               const data5 = this.weather.weather[0].main
+               createEntries('Current Weather', data5)
+               createEntries('Current temperature', data1)
+               createEntries('Feels like', data2)
+               createEntries('Pressure', data3)
+               createEntries('Humidity', data4)
+            } else {
+               const data1 = this.weather.main.temp.toFixed(1) + '°F'
+               const data2 = this.weather.main.feels_like.toFixed(1) + '°F'
+               const data3 = this.weather.main.pressure.toFixed(1)+ ' hPa'
+               const data4 = this.weather.main.humidity.toFixed(1) + '%'
+               const data5 = this.weather.weather[0].main
+               createEntries('Current Weather', data5)
+               createEntries('Current temperature', data1)
+               createEntries('Feels like', data2)
+               createEntries('Pressure', data3)
+               createEntries('Humidity', data4)
+            }
             
-            createEntries('Current Weather', data5)
-            createEntries('Current temperature', data1)
-            createEntries('Feels like', data2)
-            createEntries('Pressure', data3)
-            createEntries('Humidity', data4)
-
+            
+            
             const futureWeatherDOM = document.createElement('div')
             futureWeatherDOM.classList.add('futureWeather')
             futureWeatherDOM.setAttribute('id','futureWeatherDOM')
@@ -128,8 +167,12 @@ import 'animate.css';
                const date2 = this.date(futureWeather[i].dt)
                title.textContent = date2.time
                p.textContent = date2.hour + 'h UTC'
+               if(celcius){
+                  current.textContent = futureWeather[i].main.temp.toFixed(1) + '°C'
+               } else {
+                  current.textContent = futureWeather[i].main.temp.toFixed(1) + '°F'
 
-               current.textContent = futureWeather[i].main.temp.toFixed(1) + '°C'
+               }
                title.appendChild(p)
                wrapper.appendChild(title)
                wrapper.appendChild(current)
