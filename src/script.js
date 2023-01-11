@@ -5,7 +5,7 @@ import 'animate.css';
 
 (function () {
    let celcius = true;
-
+   let city = ''
    let weather_app = {
       init: function() {
          this.cachingDom();
@@ -59,13 +59,13 @@ import 'animate.css';
             this.farenheit.classList.remove('chosen')
             this.celcius.classList.add('chosen')
             celcius = true;
-            console.log(celcius)
+            
          })
          this.farenheit.addEventListener('click', () => {
             this.celcius.classList.remove('chosen')
             this.farenheit.classList.add('chosen')
             celcius = false;
-            console.log(celcius)
+            
          })
 
       },
@@ -78,7 +78,9 @@ import 'animate.css';
             this.weather = await cityWeather.json();
             const getCityFutureWeather = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${this.cityCoordinates[0].lat}&lon=${this.cityCoordinates[0].lon}&units=metric&appid=${this.api_key}`)
             this.cityFutureWeather = await getCityFutureWeather.json();
-            console.log(this.cityFutureWeather.list)
+            
+            city = this.cityCoordinates[0].name
+            
 
             this.getCountry(this.cityCoordinates[0].country)
             } else {
@@ -89,7 +91,8 @@ import 'animate.css';
                const getCityFutureWeather = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${this.cityCoordinates[0].lat}&lon=${this.cityCoordinates[0].lon}&units=imperial&appid=${this.api_key}`)
                this.cityFutureWeather = await getCityFutureWeather.json();
                this.getCountry(this.cityCoordinates[0].country)
-               console.log(this.cityFutureWeather.list)
+               
+               city = this.cityCoordinates[0].name
             }
             this.input.value = ''
             } catch (err) {
@@ -103,7 +106,6 @@ import 'animate.css';
             }
             const futureWeather = this.cityFutureWeather.list
 
-            console.log(futureWeather)
             this.cityP.textContent = `${this.cityCoordinates[0].name}, ${this.country}`
 
             function createEntries(title, data) {
