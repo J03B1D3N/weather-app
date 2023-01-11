@@ -7,7 +7,21 @@ import "./style.scss";
       init: function() {
          this.cachingDom();
          this.bindEvents();
+         this.date();
       },
+      date: function timeConverter(UNIX_timestamp){
+         let a = new Date(UNIX_timestamp * 1000);
+         let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+         let year = a.getUTCFullYear();
+         let month = months[a.getUTCMonth()];
+         let date = a.getUTCDate();
+         let hour = a.getUTCHours();
+         let min = a.getUTCMinutes();
+         let sec = a.getUTCSeconds();
+         let time = hour + ':' + min + ':' + sec ;
+         return time;
+       },
+       
       cachingDom: function() {
 
       this.btn = document.querySelector('button')
@@ -27,9 +41,7 @@ import "./style.scss";
          const Countries = await fetch(`https://restcountries.com/v3.1/alpha/${c}`, {mode: 'cors'})
          this.countriesJson = await Countries.json();
          this.country = this.countriesJson[0].name.common
-         this.cityP.textContent = `${this.cityCoordinates[0].name}, ${this.country}`
-
-         console.log(this.country)
+         this.updateDom();
          } catch(err) {
             console.log(err)
          }
@@ -44,21 +56,41 @@ import "./style.scss";
          try {
             const GetCoordinates = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${this.input.value}&limit=1&appid=${this.api_key}`)
             this.cityCoordinates = await GetCoordinates.json();
-            console.log(this.cityCoordinates)
             const cityWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${this.cityCoordinates[0].lat}&lon=${this.cityCoordinates[0].lon}&units=metric&appid=${this.api_key}`)
             this.weather = await cityWeather.json();
-            
-            console.log(this.weather)
+            const getCityFutureWeather = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${this.cityCoordinates[0].lat}&lon=${this.cityCoordinates[0].lon}&units=metric&appid=${this.api_key}`)
+            this.cityFutureWeather = await getCityFutureWeather.json();
+            console.log(this.cityFutureWeather.list)
+
             this.getCountry(this.cityCoordinates[0].country)
-            this.updateDom();
+            
             this.input.value = ''
             } catch (err) {
                console.log(err)
             }
          },
          updateDom: async function() {
-           
-            
+            const futureWeather = this.cityFutureWeather.list.filter(entry => this.date(entry.dt).includes('0:0:0'))
+            for(let i = 0; i < futureWeather.length; i++) {
+               const wrapper = document.createElement('div')
+               wrapper.classList.add('wrapper')
+               const title = document.createElement('div')
+               title.classList.add('title')
+               const current = document.createElement('div')
+               current.classList.add('current')
+
+               const date2 = futureWeather[i].dt_txt.split(' ')
+               title.textContent = futureWeather[i].dt_txt
+
+               current.textContent = futureWeather[i].main.temp.toFixed(1) + '°C'
+
+               wrapper.appendChild(title)
+               wrapper.appendChild(current)
+               main.appendChild(wrapper)
+
+            }
+            console.log(futureWeather)
+            this.cityP.textContent = `${this.cityCoordinates[0].name}, ${this.country}`
             console.log()
             this.currentTemp.textContent = this.weather.main.temp.toFixed(1) + '°C'
             this.feelsLikeTemp.textContent = this.weather.main.feels_like.toFixed(1) + '°C'
