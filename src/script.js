@@ -1,4 +1,5 @@
 import "./style.scss";
+import 'animate.css';
 
 
 
@@ -7,7 +8,6 @@ import "./style.scss";
       init: function() {
          this.cachingDom();
          this.bindEvents();
-         this.date();
       },
       date: function timeConverter(UNIX_timestamp){
          let a = new Date(UNIX_timestamp * 1000);
@@ -18,8 +18,8 @@ import "./style.scss";
          let hour = a.getUTCHours();
          let min = a.getUTCMinutes();
          let sec = a.getUTCSeconds();
-         let time = hour + ':' + min + ':' + sec ;
-         return time;
+         let time = date + ' ' + month + ' ' + year
+         return {time, hour};
        },
        
       cachingDom: function() {
@@ -35,6 +35,7 @@ import "./style.scss";
       this.body = document.querySelector('body')
       this.form = document.getElementById('form')
       this.api_key = '21ad911d5f1719a1d5ce294eec8a1017'
+      this.wrappers = document.querySelectorAll('.wrapper')
       },
       getCountry: async function(c) {
          try {
@@ -70,33 +71,71 @@ import "./style.scss";
             }
          },
          updateDom: async function() {
-            const futureWeather = this.cityFutureWeather.list.filter(entry => this.date(entry.dt).includes('0:0:0'))
-            for(let i = 0; i < futureWeather.length; i++) {
-               const wrapper = document.createElement('div')
-               wrapper.classList.add('wrapper')
-               const title = document.createElement('div')
-               title.classList.add('title')
-               const current = document.createElement('div')
-               current.classList.add('current')
-
-               const date2 = futureWeather[i].dt_txt.split(' ')
-               title.textContent = futureWeather[i].dt_txt
-
-               current.textContent = futureWeather[i].main.temp.toFixed(1) + '°C'
-
-               wrapper.appendChild(title)
-               wrapper.appendChild(current)
-               main.appendChild(wrapper)
-
+           
+            while(main.firstChild){
+               main.firstChild.remove()
             }
+            const futureWeather = this.cityFutureWeather.list
+
             console.log(futureWeather)
             this.cityP.textContent = `${this.cityCoordinates[0].name}, ${this.country}`
-            console.log()
-            this.currentTemp.textContent = this.weather.main.temp.toFixed(1) + '°C'
-            this.feelsLikeTemp.textContent = this.weather.main.feels_like.toFixed(1) + '°C'
-            this. pressure.textContent = this.weather.main.pressure.toFixed(1)+ ' hPa'
-            this.humidity.textContent = this.weather.main.humidity.toFixed(1) + '%'
-            this.currentWeather.textContent = this.weather.weather[0].main
+
+            function createEntries(title, data) {
+               const currentWrapper = document.createElement('div')
+               currentWrapper.classList.add('wrapper')
+
+               const currentTitle = document.createElement('div')
+               currentTitle.classList.add('title')
+               currentTitle.textContent = title
+
+               const currentCurrent = document.createElement('div')
+               currentCurrent.classList.add('current')
+               currentCurrent.textContent = data
+
+               currentWrapper.appendChild(currentTitle)
+               currentWrapper.appendChild(currentCurrent)
+
+               main.appendChild(currentWrapper)
+            }
+
+            const data1 = this.weather.main.temp.toFixed(1) + '°C'
+            const data2 = this.weather.main.feels_like.toFixed(1) + '°C'
+            const data3 = this.weather.main.pressure.toFixed(1)+ ' hPa'
+            const data4 = this.weather.main.humidity.toFixed(1) + '%'
+            const data5 = this.weather.weather[0].main
+            
+            createEntries('Current Weather', data5)
+            createEntries('Current temperature', data1)
+            createEntries('Feels like', data2)
+            createEntries('Pressure', data3)
+            createEntries('Humidity', data4)
+
+            const futureWeatherDOM = document.createElement('div')
+            futureWeatherDOM.classList.add('futureWeather')
+            futureWeatherDOM.setAttribute('id','futureWeatherDOM')
+            main.appendChild(futureWeatherDOM)
+
+            for(let i = 0; i < futureWeather.length; i++) {
+               
+               const wrapper = document.createElement('div')
+               wrapper.classList.add('wrapper')
+               wrapper.style.display = 'block'
+               const title = document.createElement('div')
+               title.classList.add('title')
+               const p = document.createElement('p')
+               const current = document.createElement('div')
+               current.classList.add('current')
+               const date2 = this.date(futureWeather[i].dt)
+               title.textContent = date2.time
+               p.textContent = date2.hour + 'h UTC'
+
+               current.textContent = futureWeather[i].main.temp.toFixed(1) + '°C'
+               title.appendChild(p)
+               wrapper.appendChild(title)
+               wrapper.appendChild(current)
+               futureWeatherDOM.appendChild(wrapper)
+
+            }
          }
       }
 
