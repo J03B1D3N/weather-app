@@ -9,6 +9,7 @@ module.exports = {
   },
   output: {
     filename: 'main.js',
+    publicPath: "/weather-app/", // no idea why this was here, i think i need to uncomment it if i want to run "npm run deploy"
     path: path.resolve(__dirname, 'dist'),
   },
   module: {

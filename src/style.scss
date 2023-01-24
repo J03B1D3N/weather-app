@@ -105,10 +105,7 @@ footer {
     }
 }
 
-p {
-    font-size: 2rem;
 
-}
 main {
     grid-column: 1/6;
     grid-row: 2/14;
@@ -120,6 +117,7 @@ main {
     align-items: center;
     gap: 10px;
     .futureWeather {
+        padding-bottom: 20px;
         grid-row: 2/3;
         grid-column: 1/6;
         display: grid;
@@ -127,44 +125,46 @@ main {
         gap: 10px;
         overflow-y: hidden;
         overflow-x: auto;
-        .wrapper {
+        .wrapperFuture {
+            border: 2px solid rgba(white, 0.8) ;
+            border-bottom: none;
+            border-top: none;
             width: 368px;
-    
+            display: flex;
+            animation: fadeInUp;
+            animation-duration: 1s;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            height: 200px;
+            .title{
+                font-size: 1.5rem;
+                p{
+                    font-size: 1.5rem;
+                    margin: 0;
+                }
+            }
  
             .current {
                 height: fit-content;
             }
         }
     }
-      ::-webkit-scrollbar {
-        width: 5px;
-        }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: white;
-    border-radius: 5px;
-
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
+      
     
     .wrapper {
-        height: 354px; 
+        height: 70%; 
         width: 368px;
         padding: 20px 0px;
-        border: 5px solid rgba(white, 0.2) ;
-        border-radius: 15px;
+        border: 2px solid rgba(white, 0.8) ;
+        // border-radius: 15px;
+        border-left: none;
+        border-right: none;
         animation: fadeInDown;
         animation-duration: 1s;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
     .title {
         font-size: 2rem;
@@ -184,4 +184,24 @@ main {
         font-size: 5rem;
         text-align: center;
     }
+}
+::-webkit-scrollbar {
+        width: 1px;
+    }
+
+/* Track */
+::-webkit-scrollbar-track {
+background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: white;
+border-radius: 5px;
+
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: #555;
 }

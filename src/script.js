@@ -3,9 +3,10 @@ import 'animate.css';
 
 
 
+
+
 (function () {
    let celcius = true;
-   let city = ''
    let weather_app = {
       init: function() {
          this.cachingDom();
@@ -72,19 +73,19 @@ import 'animate.css';
       getWeather: async function() {
          try {
             if(celcius){
-            const GetCoordinates = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${this.input.value}&limit=1&appid=${this.api_key}`)
+            const GetCoordinates = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${this.input.value}&limit=1&appid=${this.api_key}`)
             this.cityCoordinates = await GetCoordinates.json();
             const cityWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${this.cityCoordinates[0].lat}&lon=${this.cityCoordinates[0].lon}&units=metric&appid=${this.api_key}`)
             this.weather = await cityWeather.json();
             const getCityFutureWeather = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${this.cityCoordinates[0].lat}&lon=${this.cityCoordinates[0].lon}&units=metric&appid=${this.api_key}`)
             this.cityFutureWeather = await getCityFutureWeather.json();
             
-            city = this.cityCoordinates[0].name
+         
             
 
             this.getCountry(this.cityCoordinates[0].country)
             } else {
-               const GetCoordinates = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${this.input.value}&limit=1&appid=${this.api_key}`)
+               const GetCoordinates = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${this.input.value}&limit=1&appid=${this.api_key}`)
                this.cityCoordinates = await GetCoordinates.json();
                const cityWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${this.cityCoordinates[0].lat}&lon=${this.cityCoordinates[0].lon}&units=imperial&appid=${this.api_key}`)
                this.weather = await cityWeather.json();
@@ -92,7 +93,7 @@ import 'animate.css';
                this.cityFutureWeather = await getCityFutureWeather.json();
                this.getCountry(this.cityCoordinates[0].country)
                
-               city = this.cityCoordinates[0].name
+               
             }
             this.input.value = ''
             } catch (err) {
@@ -159,7 +160,7 @@ import 'animate.css';
             for(let i = 0; i < futureWeather.length; i++) {
                
                const wrapper = document.createElement('div')
-               wrapper.classList.add('wrapper')
+               wrapper.classList.add('wrapperFuture')
                wrapper.style.display = 'block'
                const title = document.createElement('div')
                title.classList.add('title')
