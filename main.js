@@ -855,7 +855,7 @@ __webpack_require__.r(__webpack_exports__);
       getWeather: async function() {
          try {
             if(celcius){
-            const GetCoordinates = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${this.input.value}&limit=1&appid=${this.api_key}`)
+            const GetCoordinates = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${this.input.value}&limit=1&appid=${this.api_key}`)
             this.cityCoordinates = await GetCoordinates.json();
             const cityWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${this.cityCoordinates[0].lat}&lon=${this.cityCoordinates[0].lon}&units=metric&appid=${this.api_key}`)
             this.weather = await cityWeather.json();
