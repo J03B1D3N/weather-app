@@ -16,7 +16,7 @@ body {
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(14, 1fr);
     background: url(./images/bc.jpg);
-    background-size: 1920px 948px;
+    background-size: 100vw 100vh;
     background-repeat: no-repeat;
     height: 100vh;
     width: 100vw;
@@ -119,6 +119,16 @@ main {
     margin: 20px;
     align-items: center;
     gap: 10px;
+    .wrapper {
+        height: 354px; 
+        width: 368px;
+        padding: 20px 0px;
+        border: 5px solid rgba(white, 0.3) ;
+        border-left: none;
+        border-right: none;
+        animation: fadeInDown;
+        animation-duration: 1s;
+    }
     .futureWeather {
         grid-row: 2/3;
         grid-column: 1/6;
@@ -127,10 +137,15 @@ main {
         gap: 10px;
         overflow-y: hidden;
         overflow-x: auto;
-        .wrapper {
+        padding-bottom: 20px;
+        .futureWrapper {
             width: 368px;
-    
- 
+            height: 354px; 
+            border: 5px solid rgba(white, 0.3) ;
+            border-top: none;
+            border-bottom: none;
+            animation:fadeInUp;
+            animation-duration: 1s;
             .current {
                 height: fit-content;
             }
@@ -157,15 +172,7 @@ main {
     background: #555;
   }
     
-    .wrapper {
-        height: 354px; 
-        width: 368px;
-        padding: 20px 0px;
-        border: 5px solid rgba(white, 0.2) ;
-        border-radius: 15px;
-        animation: fadeInDown;
-        animation-duration: 1s;
-    }
+    
     .title {
         font-size: 2rem;
         font-weight: 600;
